@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRYPTO-TRACK — Платформа Криптоаналітики</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="#" class="site-logo">
+                <span class="logo-icon">📊</span> CRYPTO<span class="logo-accent">-TRACK</span>
+            </a>
+            <nav class="site-nav">
+                <a href="#hero">Головна</a>
+                <a href="#market">Моніторинг</a>
+                <a href="#analytics">Аналітика</a>
+                <a href="#calc">Конвертер</a>
+                <a href="#process">Транзакції</a>
+                <a href="#signals">Прогнози</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contact">Контакти</a>
+            </nav>
+            <div class="header-controls">
+                <button class="theme-toggle-btn" onclick="toggleTheme()" title="Змінити тему">
+                    <span class="theme-icon-sun">☀</span>
+                    <span class="theme-icon-moon">☽</span>
+                </button>
+                <div class="header-status">
+                    <span class="status-dot"></span> API Live
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+
+        <section id="hero" class="hero-section">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-text-block">
+                        <h1>Платформа Професійного Моніторингу <span class="text-gradient">Криптоактивів</span></h1>
+                        <p>Отримуйте прямі інтерактивні дані, відстежуйте ринкові тренди в реальному часі та аналізуйте настрої глобальної блокчейн-спільноти без зайвих затримок.</p>
+                        <div class="hero-stats-banner">
+                            <div class="hero-stat-item">
+                                <span class="stat-label">Капіталізація ринку (24г)</span>
+                                <span id="global-market-cap" class="stat-value">$2.45T</span>
+                            </div>
+                            <div class="hero-stat-item">
+                                <span class="stat-label">Активні мережі</span>
+                                <span class="stat-value">5 Провідних</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-hot-coins">
+                        <h3>🔥 Гарячі активи дня</h3>
+                        <div id="hot-coins-container">
+                            <div class="hot-coin-loading">Завантаження швидких трендів...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="market" class="section-block">
+            <div class="container">
+                <div class="section-header-flex">
+                    <div class="section-title-wrap">
+                        <h2>Живий моніторинг котирувань</h2>
+                        <p class="section-subtitle">Сортування, фільтрація та налаштування вигляду інтерфейсу трейдера</p>
+                    </div>
+                    <div class="market-controls">
+                        <div class="view-switcher">
+                            <button id="view-btn-table" class="view-btn active" onclick="switchMarketView('table')">📋 Таблиця</button>
+                            <button id="view-btn-grid" class="view-btn" onclick="switchMarketView('grid')">📱 Плитка</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="market-content-wrapper">
+                    <div id="market-table-view" class="table-container">
+                        <table class="crypto-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Назва активу</th>
+                                    <th>Поточна ціна</th>
+                                    <th>Зміна (24г)</th>
+                                    <th>Ринкова капіталізація</th>
+                                </tr>
+                            </thead>
+                            <tbody id="crypto-table-body">
+                                <tr>
+                                    <td colspan="5" class="loading-text">Підключення до шлюзу криптографічних даних...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="market-grid-view" class="crypto-grid-layout hidden">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="analytics" class="section-block">
+            <div class="container">
+                <div class="dashboard-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title-block">
+                                <h3 id="chart-title">Інтерактивний тренд: Bitcoin (BTC)</h3>
+                                <p class="chart-subtitle">Динаміка ринкової вартості за останні 7 днів за даними API</p>
+                            </div>
+                            <div class="chart-controls-right">
+                                <div class="timeframe-switcher">
+                                    <button class="tf-btn" id="tf-1" onclick="changeChartTimeframe('1')">1Д</button>
+                                    <button class="tf-btn active" id="tf-7" onclick="changeChartTimeframe('7')">7Д</button>
+                                    <button class="tf-btn" id="tf-30" onclick="changeChartTimeframe('30')">30Д</button>
+                                    <button class="tf-btn" id="tf-365" onclick="changeChartTimeframe('365')">1Р</button>
+                                </div>
+                                <div class="crypto-selector">
+                                    <select id="chart-coin-select" onchange="updateChartData(this.value, currentTimeframe)">
+                                        <option value="bitcoin">Bitcoin (BTC)</option>
+                                        <option value="ethereum">Ethereum (ETH)</option>
+                                        <option value="binancecoin">BNB (Binance)</option>
+                                        <option value="solana">Solana (SOL)</option>
+                                        <option value="ripple">Ripple (XRP)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="cryptoTrendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-info-card">
+                        <h3>💡 Короткий технічний зріз</h3>
+                        <p>Графік відображає консолідовані дані торгів. Ви можете перемикать актив у випадаючому списку або натискати на рядки в таблиці моніторингу для миттєвого фокусування камери тренду на обраній валюті.</p>
+                        <div class="info-alert-box">
+                            <strong>Оновлення:</strong> Дані автоматично синхронізуються з сервером кожні 60 секунд.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="calc" class="section-block">
+            <div class="container">
+                <div class="converter-card-full">
+                    <div class="converter-header-text">
+                        <h3>Двосторонній математичний калькулятор</h3>
+                        <p>Миттєвий розрахунок крос-курсів криптоактивів до світових та національних фіатних валют</p>
+                    </div>
+                    <div class="converter-form-grid">
+                        <div class="input-group">
+                            <label for="convert-amount">Сума для обміну</label>
+                            <input type="number" id="convert-amount" value="1" min="0" step="any" oninput="calculateConversion()">
+                        </div>
+                        <div class="input-group">
+                            <label for="convert-from">З валюти / крипти</label>
+                            <select id="convert-from" onchange="calculateConversion()">
+                                <option value="bitcoin">Bitcoin (BTC)</option>
+                                <option value="ethereum">Ethereum (ETH)</option>
+                                <option value="binancecoin">BNB</option>
+                                <option value="solana">Solana (SOL)</option>
+                                <option value="ripple">Ripple (XRP)</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="convert-to">У валюту отримання</label>
+                            <select id="convert-to" onchange="calculateConversion()">
+                                <option value="usd">Долар США ($)</option>
+                                <option value="eur">Євро (€)</option>
+                                <option value="uah">Українська гривня (₴)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="conversion-result-box">
+                        <span class="result-label">Розрахована еквівалентна вартість</span>
+                        <div id="conversion-result" class="result-value">$ 0.00</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="process" class="section-block">
+            <div class="container">
+                <div class="center-title">
+                    <h2>Анатомія блокчейн-транзакції</h2>
+                    <p class="section-subtitle">Покроковий технологічний життєвий цикл переказу цифрових активів</p>
+                </div>
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-step">
+                        <div class="step-number">01</div>
+                        <div class="step-content">
+                            <h4>Ініціалізація та підпис</h4>
+                            <p>Користувач створює транзакцію та підписує її своїм закритим криптографічним ключем.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-number">02</div>
+                        <div class="step-content">
+                            <h4>Попадання в Mempool</h4>
+                            <p>Запит надходить у мережу та очікує в черзі (пулі пам'яті) на верифікацію валідаторами.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-number">03</div>
+                        <div class="step-content">
+                            <h4>Формування блоку</h4>
+                            <p>Транзакція об'єднується з іншими запитами в блок за допомогою алгоритмів PoW або PoS.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-number">04</div>
+                        <div class="step-content">
+                            <h4>Фіналізація в ланцюг</h4>
+                            <p>Блок назавжди записується в децентралізований реєстр. Транзакцію неможливо змінити.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="signals" class="section-block">
+            <div class="container">
+                <div class="reviews-analytics-head">
+                    <div class="reviews-summary-card">
+                        <h3>Настрої криптоспільноти</h3>
+                        <div class="rating-huge-display">
+                            <span class="rating-number" id="sentiment-percentage">78%</span>
+                            <span class="rating-label">Bullish (Бичий тренд)</span>
+                        </div>
+                        <div class="sentiment-bars">
+                            <div class="sentiment-bar-row">
+                                <span>Bullish (Купівля)</span>
+                                <div class="bar-bg"><div class="bar-fill" style="width: 78%; background-color: var(--crypto-up);"></div></div>
+                                <span id="count-bullish">78%</span>
+                            </div>
+                            <div class="sentiment-bar-row">
+                                <span>Bearish (Продаж)</span>
+                                <div class="bar-bg"><div class="bar-fill" style="width: 22%; background-color: var(--crypto-down);"></div></div>
+                                <span id="count-bearish">22%</span>
+                            </div>
+                        </div>
+                        <button class="action-btn-primary" onclick="openSignalModal()">✙ Залишити свій прогноз</button>
+                    </div>
+
+                    <div class="reviews-list-container">
+                        <h3>💬 Оперативні оцінки та аналітичні сигнали користувачів</h3>
+                        <div id="signals-feed" class="signals-feed-scroll">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="section-block">
+            <div class="container">
+                <div class="center-title">
+                    <h2>Часті запитання аналітиків</h2>
+                    <p class="section-subtitle">Розгортайте блоки для вивчення архітектурних нюансів роботи платформи</p>
+                </div>
+                <div class="faq-accordion-wrapper">
+                    <div class="faq-item">
+                        <button class="faq-trigger" onclick="toggleFaq(this)">
+                            <span>Як часто оновлюються ціни криптовалют на платформі?</span>
+                            <span class="faq-arrow">▼</span>
+                        </button>
+                        <div class="faq-content">
+                            <p>Наша система автоматично підключається до агрегаторів API кожні 60 секунд. Це забезпечує точність і релевантність даних для розрахунку конверсій та відображення трендів у реальному часі.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-trigger" onclick="toggleFaq(this)">
+                            <span>Звідки беруться історичні дані для лінійних графіків трендів?</span>
+                            <span class="faq-arrow">▼</span>
+                        </button>
+                        <div class="faq-content">
+                            <p>Для побудови графіків використовуються офіційні endpoints ринкових агрегаторів, які збирають зважену за об'ємом ціну (VWAP) з понад 50 найбільших світових спотових бірж.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-trigger" onclick="toggleFaq(this)">
+                            <span>Чи зберігаються мої прогнози настроїв після оновлення сторінки?</span>
+                            <span class="faq-arrow">▼</span>
+                        </button>
+                        <div class="faq-content">
+                            <p>Так. Усі прогнози, коментарі та обрані вами емодзі-аватари трейдерів записуються безпосередньо в сховище браузера (localStorage) вашого комп'ютера, тому вони залишаються активними при кожному візиті.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section-block">
+            <div class="container">
+                <div class="contact-grid">
+                    <div class="contact-info-side">
+                        <h2>Запит на регулярну аналітику</h2>
+                        <p>Заповніть форму, щоб підключити свій профіль до щоденних звітів щодо зміни ліквідності провідних блокчейн-мереж.</p>
+                        <div class="contact-meta-links">
+                            <div><strong>Шлюз підключення:</strong> mainnet-secure.crypto-track.org</div>
+                            <div><strong>Документація:</strong> docs.crypto-track.org</div>
+                        </div>
+                    </div>
+                    <div class="contact-form-side">
+                        <form id="analytics-request-form" onsubmit="handleFormSubmit(event)">
+                            <div class="form-group">
+                                <label for="user-email">Ваш контактний Email</label>
+                                <input type="text" id="user-email" placeholder="name@domain.com" oninput="validateEmailField()">
+                                <div id="email-error" class="error-message-text hidden">Помилка: Введіть коректну адресу з символом @ та доменом</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="user-phone">Номер телефону (для термінових сигналів)</label>
+                                <input type="text" id="user-phone" placeholder="+380XXXXXXXXX" oninput="validatePhoneField()">
+                                <div id="phone-error" class="error-message-text hidden">Помилка: Номер повинен починатися з + і містити лише цифри</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="user-message">Додаткові вимоги до моніторингу</label>
+                                <textarea id="user-message" rows="4" placeholder="Які токени чи мережі вас цікавлять найбільше?"></textarea>
+                            </div>
+                            <button type="submit" class="submit-form-btn">Надіслати запит на сервер</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="signal-modal" class="modal-overlay hidden">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3>Публікація ринкового сигналу</h3>
+                <button class="close-modal-btn" onclick="closeSignalModal()">✕</button>
+            </div>
+            <form id="modal-signal-form" onsubmit="submitNewSignal(event)">
+                <div class="form-group">
+                    <label for="modal-coin">Виберіть актив</label>
+                    <select id="modal-coin">
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ETH">Ethereum (ETH)</option>
+                        <option value="SOL">Solana (SOL)</option>
+                        <option value="BNB">BNB Coin</option>
+                        <option value="XRP">Ripple (XRP)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ваш ринковий настрій</label>
+                    <div class="sentiment-radio-group">
+                        <label class="radio-label up">
+                            <input type="radio" name="modal-sentiment" value="Bullish" checked> 📈 Bullish (Ріст)
+                        </label>
+                        <label class="radio-label down">
+                            <input type="radio" name="modal-sentiment" value="Bearish"> 📉 Bearish (Падіння)
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Виберіть ваш аватар трейдера</label>
+                    <div class="emoji-avatar-selector">
+                        <label><input type="radio" name="modal-emoji" value="🦬" checked> 🦬</label>
+                        <label><input type="radio" name="modal-emoji" value="🐻"> 🐻</label>
+                        <label><input type="radio" name="modal-emoji" value="🐳"> 🐳</label>
+                        <label><input type="radio" name="modal-emoji" value="🦊"> 🦊</label>
+                        <label><input type="radio" name="modal-emoji" value="🦁"> 🦁</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="modal-text">Короткий аналітичний коментар</label>
+                    <textarea id="modal-text" rows="3" required placeholder="Наприклад: Очікую пробиття рівня опору на об'ємах..."></textarea>
+                </div>
+                <button type="submit" class="submit-form-btn">Зафіксувати сигнал</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast-notification" class="toast-box hidden">Сигнал успішно записано</div>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>© 2026 CRYPTO-TRACK. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
